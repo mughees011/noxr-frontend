@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 interface OrderItem {
   productId: string
@@ -70,7 +71,7 @@ function OrderConfirmationContent() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/orders/track', {
+        const res = await fetch(`${API_URL}/api/orders/track`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,8 +1,8 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 export default function CollectionDetailPage() {
   const params = useParams()
@@ -26,7 +26,7 @@ export default function CollectionDetailPage() {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/collections/${slug}`)
+      const res = await fetch(`${API_URL}/api/collections/${slug}`)
       
       if (!res.ok) {
         setCollection(null)

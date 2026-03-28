@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 interface OrderItem {
   productId: string
@@ -60,7 +61,7 @@ export default function OrderDetailPage() {
       }
 
       try {
-        const res = await fetch(`http://localhost:5000/api/orders/${params.id}`, {
+        const res = await fetch(`${API_URL}/api/orders/${params.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

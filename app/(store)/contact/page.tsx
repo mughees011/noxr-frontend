@@ -1,7 +1,7 @@
 'use client'
-
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 function useInView(threshold = 0.12) {
   const ref = useRef<HTMLDivElement>(null)
@@ -54,7 +54,7 @@ export default function ContactPage() {
   setFormState('submitting')
 
   try {
-    const res = await fetch('http://localhost:5000/api/contact', {
+    const res = await fetch(`${API_URL}/api/contact`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

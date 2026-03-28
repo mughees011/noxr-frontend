@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 interface Variant {
   size: string
@@ -66,7 +67,7 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products')
+        const res = await fetch(`${API_URL}/api/products`)
         const data = await res.json()
 
         if (Array.isArray(data)) {

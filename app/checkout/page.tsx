@@ -6,6 +6,7 @@ import { RootState } from '@/store'
 import { clearCart } from '@/store/cartSlice'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 type Step = 'shipping' | 'payment'
 
@@ -359,7 +360,7 @@ function PaymentStep({
     setDiscountError('')
 
     try {
-      const res = await fetch('http://localhost:5000/api/discounts/validate', {
+      const res = await fetch(`${API_URL}/api/discounts/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -405,7 +406,7 @@ function PaymentStep({
       setLoading(true)
       const token = localStorage.getItem('noxr_user_token')
 
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(`${API_URL}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -446,7 +447,7 @@ function PaymentStep({
 
       // Apply discount usage if discount was used
       if (appliedDiscount) {
-        await fetch('http://localhost:5000/api/discounts/apply', {
+        await fetch(`${API_URL}/api/discounts/apply`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -596,7 +597,7 @@ function OrderSummary({
     setDiscountError('')
 
     try {
-      const res = await fetch('http://localhost:5000/api/discounts/validate', {
+      const res = await fetch(`${API_URL}/api/discounts/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

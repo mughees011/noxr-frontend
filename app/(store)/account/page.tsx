@@ -1,8 +1,8 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { API_URL } from '@/lib/api'
 
 type Tab = 'orders' | 'addresses' | 'settings'
 type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'paid' | 'cancelled'
@@ -35,7 +35,7 @@ export default function AccountDashboardPage() {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/me', {
+      const res = await fetch(`${API_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -52,8 +52,7 @@ export default function AccountDashboardPage() {
       setAddresses(data.addresses || [])
       // setWishlist(data.wishlist || [])
 
-      const ordersRes = await fetch(
-  `http://localhost:5000/api/orders/my-orders`,
+      const ordersRes = await fetch(`${API_URL}/api/orders/my-orders`,
   {
     headers: {
       Authorization: `Bearer ${token}`
@@ -301,7 +300,7 @@ function AddressesTab({ addresses }: any) {
   onClick={async () => {
     const token = localStorage.getItem('noxr_user_token')
 
-    const res = await fetch('http://localhost:5000/api/auth/address', {
+    const res = await fetch(`${API_URL}/api/auth/address`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -461,8 +460,7 @@ function SettingsTab({ user }: any) {
 
   const token = localStorage.getItem('noxr_user_token')
 
-  const res = await fetch(
-    'http://localhost:5000/api/auth/update',
+  const res = await fetch(`${API_URL}/api/auth/update`,
     {
       method: 'PUT',
       headers: {

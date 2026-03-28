@@ -1,7 +1,7 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 type TrackingState = 'idle' | 'loading' | 'found' | 'not-found'
 
@@ -37,7 +37,7 @@ export default function TrackOrderPage() {
   setTrackingState('loading')
 
   try {
-    const res = await fetch('http://localhost:5000/api/orders/track', {
+    const res = await fetch(`${API_URL}/api/orders/track`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

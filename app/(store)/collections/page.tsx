@@ -216,6 +216,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -243,7 +244,7 @@ export default function CollectionsPage() {
 
   const fetchCollections = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/collections')
+      const res = await fetch(`${API_URL}/api/collections`)
       const data = await res.json()
       setCollections(Array.isArray(data) ? data : [])
     } catch (error) {
