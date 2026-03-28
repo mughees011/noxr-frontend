@@ -24,9 +24,6 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true, // enable App Router support
-  },
   images: {
     domains: ['res.cloudinary.com', 'images.unsplash.com'],
     remotePatterns: [
