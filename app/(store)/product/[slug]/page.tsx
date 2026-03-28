@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { addToCart, openCart } from '@/store/cartSlice'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import { API_URL } from '@/lib/api'
 
 interface Variant {
   size: string
@@ -85,7 +86,7 @@ export default function ProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${slug}`)
+        const res = await fetch(`${API_URL}/api/products/${slug}`)
         if (!res.ok) {
           setLoading(false)
           return
