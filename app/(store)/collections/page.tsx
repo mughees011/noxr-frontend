@@ -216,7 +216,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)

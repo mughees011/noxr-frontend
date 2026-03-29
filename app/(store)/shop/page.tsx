@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 interface Variant {
   size: string
@@ -66,23 +66,24 @@ export default function ShopPage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/products`)
-        const data = await res.json()
+  try {
+    const data = await api.get('/products')
 
-        if (Array.isArray(data)) {
-          setProducts(data)
-          const prices = data.map((p: Product) => p.price)
-          const minPrice = Math.min(...prices)
-          const maxPrice = Math.max(...prices)
-          setPriceRange([minPrice, maxPrice])
-        }
-      } catch (error) {
-        console.error('Fetch error:', error)
-      } finally {
-        setLoading(false)
-      }
+    if (Array.isArray(data)) {
+      setProducts(data)
+
+      const prices = data.map((p: Product) => p.price)
+      const minPrice = Math.min(...prices)
+      const maxPrice = Math.max(...prices)
+
+      setPriceRange([minPrice, maxPrice])
     }
+  } catch (error) {
+    console.error('Fetch error:', error)
+  } finally {
+    setLoading(false)
+  }
+}
 
     fetchProducts()
   }, [])

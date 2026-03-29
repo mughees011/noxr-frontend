@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 interface OrderItem {
   productId: string

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { addToCart, openCart } from '@/store/cartSlice'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 interface Variant {
   size: string

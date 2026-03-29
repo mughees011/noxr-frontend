@@ -1,8 +1,8 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { api } from '@/lib/api'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Product {
@@ -56,8 +56,7 @@ export default function HomePage() {
   useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/products')
-      const data = await res.json()
+      const data = await api.get('/products')
 
       if (Array.isArray(data)) {
         setProducts(data.slice(0, 4))

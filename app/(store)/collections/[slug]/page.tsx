@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 export default function CollectionDetailPage() {
   const params = useParams()

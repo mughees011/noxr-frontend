@@ -6,7 +6,7 @@ import { RootState } from '@/store'
 import { clearCart } from '@/store/cartSlice'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { API_URL } from '@/lib/api'
+import { api } from '@/lib/api'
 
 type Step = 'shipping' | 'payment'
 

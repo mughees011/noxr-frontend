@@ -112,34 +112,58 @@
 
 
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL!
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
+
+// Helper to get admin token
+const getToken = () => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('noxr_admin_token');
+};
+
+// Core request function
+const request = async (
+  endpoint: string,
+  method: string = 'GET',
+  data?: any,
+  isAdmin: boolean = false
+) => {
+  const token = isAdmin ? getToken() : null;
+
+  const res = await fetch(`${BASE_URL}${endpoint}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...(data && { body: JSON.stringify(data) }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || 'API Error');
+  }
+
+  return res.json();
+};
+
+// ---
+
+// # 🔹 PUBLIC API
 
 export const api = {
-  get: async (endpoint: string, token?: string) => {
-    const res = await fetch(`${API_URL}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    })
+  get: (endpoint: string) => request(endpoint, 'GET'),
+  post: (endpoint: string, data?: any) => request(endpoint, 'POST', data),
+  put: (endpoint: string, data?: any) => request(endpoint, 'PUT', data),
+  delete: (endpoint: string) => request(endpoint, 'DELETE'),
+};
 
-    if (!res.ok) throw new Error('API Error')
-    return res.json()
-  },
+// ---
 
-  post: async (endpoint: string, data?: any, token?: string) => {
-    const res = await fetch(`${API_URL}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: JSON.stringify(data),
-    })
+// # 🔹 ADMIN API (AUTO TOKEN)
 
-    if (!res.ok) throw new Error('API Error')
-    return res.json()
-  },
-}
-
-export { API_URL }
+export const adminApi = {
+  get: (endpoint: string) => request(endpoint, 'GET', null, true),
+  post: (endpoint: string, data?: any) => request(endpoint, 'POST', data, true),
+  put: (endpoint: string, data?: any) => request(endpoint, 'PUT', data, true),
+  delete: (endpoint: string) => request(endpoint, 'DELETE', null, true),
+};
