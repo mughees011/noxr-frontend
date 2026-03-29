@@ -63,6 +63,6 @@ export const adminApi = {
   delete: (endpoint: string) => request(endpoint, 'DELETE', null, true),
 
   stats: () => request('/api/admin/stats', 'GET', null, true),
-  recentOrders: () => request('/api/admin/orders/recent', 'GET', null, true),
-  lowStock: () => request('/api/admin/products/low-stock', 'GET', null, true),
+  recentOrders: () => request('/api/admin/recent-orders', 'GET', null, true),
+  lowStock: () => request('/api/admin/low-stock', 'GET', null, true),
 };

@@ -71,23 +71,16 @@ function OrderConfirmationContent() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`/orders/track`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId, email }),
+        const data = await api.post('/api/orders/track', {
+          orderId,
+          email,
         })
 
-        if (!res.ok) {
-          throw new Error('Order not found')
-        }
-
-        const data = await res.json()
-        setOrder(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
+setOrder(data)
+      } catch (error: any) {
+          console.error(error)
+          setOrder(null)
+        } finally {
         setLoading(false)
       }
     }

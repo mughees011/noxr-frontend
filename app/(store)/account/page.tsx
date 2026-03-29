@@ -278,7 +278,7 @@ function AddressesTab({ addresses }: any) {
   onClick={async () => {
     const token = localStorage.getItem('noxr_user_token')
 
-    await api.post('/api/auth/address', {
+    await api.post('/auth/address', {
   name: "Home",
   address: "Test Street 123",
   city: "Karachi",

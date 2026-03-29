@@ -37,13 +37,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
     router.push('/admin/dashboard')
 
-  } catch (error: any) {
-    setFormState('error')
-    setErrorMsg(
-      error.response?.data?.message || 'Invalid credentials'
-    )
+  }   catch (error: any) {
+        setFormState('error')
+        setErrorMsg(error.message || 'Invalid credentials')
+      }
   }
-}
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F7F3ED' }}>
