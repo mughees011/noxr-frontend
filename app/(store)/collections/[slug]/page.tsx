@@ -26,7 +26,7 @@ export default function CollectionDetailPage() {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/collections/${slug}`)
+      const res = await fetch(`/collections/${slug}`)
       
       if (!res.ok) {
         setCollection(null)

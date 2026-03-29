@@ -24,22 +24,10 @@ export default function LoginPage() {
     setFormState('loading')
     setErrorMsg('')
 
-    const res = await fetch(`${API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: form.email,
-        password: form.password
-      })
+    const data = await api.post('/auth/login', {
+      email: form.email,
+      password: form.password
     })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Login failed')
-    }
 
     // Save token
     localStorage.setItem('noxr_user_token', data.token)

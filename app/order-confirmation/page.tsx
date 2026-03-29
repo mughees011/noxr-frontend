@@ -71,7 +71,7 @@ function OrderConfirmationContent() {
 
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/orders/track`, {
+        const res = await fetch(`/orders/track`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

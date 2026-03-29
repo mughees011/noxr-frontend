@@ -53,34 +53,30 @@ export default function OrderDetailPage() {
 
   useEffect(() => {
     const fetchOrder = async () => {
+
       const token = localStorage.getItem('noxr_user_token')
 
       if (!token) {
         router.push('/auth/login')
-        return
-      }
+      return
+      } 
 
       try {
-        const res = await fetch(`${API_URL}/api/orders/${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-
-        if (!res.ok) {
-          throw new Error('Order not found')
-        }
-
-        const data = await res.json()
+        const data = await api.get(`/orders/${params.id}`)
         setOrder(data)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setLoading(false)
-      }
+      } catch (error: any) {
+  console.error(error)
+
+  if (error.message.includes('401')) {
+    localStorage.removeItem('noxr_user_token')
+    router.push('/auth/login')
+  }
+}
     }
 
-    if (params.id) {
+    const id = Array.isArray(params.id) ? params.id[0] : params.id
+
+if (id) {
       fetchOrder()
     }
   }, [params.id, router])

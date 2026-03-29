@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { adminAPI } from '@/lib/api';
+import { adminApi } from '@/lib/api';
 
 export default function AdminDashboardPage() {
   const router = useRouter()
@@ -15,14 +15,14 @@ export default function AdminDashboardPage() {
   useEffect(() => {
   const loadDashboard = async () => {
     try {
-      const statsRes = await adminAPI.stats()
-      setStats(statsRes.data)
+      const statsRes = await adminApi.get('/admin/stats')
+      setStats(statsRes.data || statsRes)
 
-      const ordersRes = await adminAPI.recentOrders()
-      setRecentOrders(ordersRes.data)
+      const ordersRes = await adminApi.get('/admin/orders/recent')
+      setRecentOrders(ordersRes.data || ordersRes)
 
-      const lowStockRes = await adminAPI.lowStock()
-      setLowStock(lowStockRes.data) 
+      const lowStockRes = await adminApi.get('/admin/products/low-stock')
+      setLowStock(lowStockRes.data || lowStockRes)
 
       setLoaded(true)
     } catch (error) {

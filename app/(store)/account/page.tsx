@@ -35,36 +35,27 @@ export default function AccountDashboardPage() {
     }
 
     try {
-      const userData = await api.get('/api/auth/me', token)
-        setUser(userData)
-        setAddresses(userData.addresses || [])
+      const userData = await api.get('/auth/me')
+      setUser(userData)
+      setAddresses(userData.addresses || [])
 
-      const ordersRes = await fetch(`${API_URL}/api/orders/my-orders`,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-)
+      const ordersData = await api.get('/orders/my-orders')
 
-if (ordersRes.ok) {
-  const ordersData = await ordersRes.json()
+      const formatted = ordersData.map((o: any) => ({
+        id: o._id,
+        status: o.status,
+        total: o.total,
+        date: new Date(o.createdAt).toLocaleDateString(),
+        image: o.items?.[0]?.image || '',
+        items: o.items?.length || 0
+      }))
 
-  const formatted = ordersData.map((o: any) => ({
-    id: o._id,
-    status: o.status,
-    total: o.total,
-    date: new Date(o.createdAt).toLocaleDateString(),
-    image: o.items?.[0]?.image || '',
-    items: o.items?.length || 0
-  }))
+      setOrders(formatted)
 
-  setOrders(formatted)
-}
+      setLoaded(true)
 
     } catch {
       localStorage.removeItem('noxr_user_token')
-      localStorage.removeItem('noxr_user')
       router.push('/auth/login')
     }
   }
@@ -287,25 +278,17 @@ function AddressesTab({ addresses }: any) {
   onClick={async () => {
     const token = localStorage.getItem('noxr_user_token')
 
-    const res = await fetch(`${API_URL}/api/auth/address`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        name: "Home",
-        address: "Test Street 123",
-        city: "Karachi",
-        province: "Sindh",
-        postalCode: "75000",
-        phone: "03000000000",
-        isDefault: false
-      })
-    })
+    await api.post('/api/auth/address', {
+  name: "Home",
+  address: "Test Street 123",
+  city: "Karachi",
+  province: "Sindh",
+  postalCode: "75000",
+  phone: "03000000000",
+  isDefault: false
+})
 
-    const updated = await res.json()
-    location.reload()
+location.reload()
   }}
 >
           <span>Add New</span>
@@ -433,51 +416,38 @@ function WishlistTab({ items }: any) {
 
 function SettingsTab({ user }: any) {
   const [form, setForm] = useState({
-    firstName: user.name.split(' ')[0],
-    lastName: user.name.split(' ')[1],
-    email: user.email,
-    phone: user.phone,
+    firstName: user?.name?.split(' ')[0] || '',
+    lastName: user?.name?.split(' ')[1] || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
   })
 
   const update = (field: string, value: string) =>
     setForm(prev => ({ ...prev, [field]: value }))
 
   const handleSave = async (e: React.FormEvent) => {
-  e.preventDefault()
+    e.preventDefault()
 
-  const token = localStorage.getItem('noxr_user_token')
-
-  const res = await fetch(`${API_URL}/api/auth/update`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
+    try {
+      await api.put('/auth/update', {
         name: `${form.firstName} ${form.lastName}`,
         email: form.email,
         phone: form.phone
       })
-    }
-  )
 
-  if (res.ok) {
-    alert('Profile updated')
+      alert('Profile updated')
+    } catch (err: any) {
+      alert(err.message)
+    }
   }
-}
 
   return (
     <div className="max-w-[600px]">
-      <h2
-        className="font-display font-light text-[#1A1208] mb-8"
-        style={{ fontSize: 'clamp(24px, 5vw, 32px)', letterSpacing: '-0.01em' }}
-      >
+      <h2 className="font-display font-light text-[#1A1208] mb-8">
         Account Settings
       </h2>
 
       <form onSubmit={handleSave} className="space-y-6">
-        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField label="First Name" type="text" value={form.firstName} onChange={(v: string) => update('firstName', v)} />
           <FormField label="Last Name" type="text" value={form.lastName} onChange={(v: string) => update('lastName', v)} />
@@ -490,27 +460,6 @@ function SettingsTab({ user }: any) {
           <span>Save Changes</span>
         </button>
       </form>
-
-      <div className="mt-12 pt-8 border-t" style={{ borderColor: 'rgba(26,18,8,0.08)' }}>
-        <h3 className="font-display font-light text-[#1A1208] mb-4" style={{ fontSize: '20px' }}>
-          Change Password
-        </h3>
-        <Link href="/auth/forgot-password" className="btn-ghost">
-          Reset Password
-        </Link>
-      </div>
-
-      <div className="mt-12 pt-8 border-t" style={{ borderColor: 'rgba(26,18,8,0.08)' }}>
-        <h3 className="font-display font-light text-[#1A1208] mb-2" style={{ fontSize: '20px', color: 'rgba(160,80,80,0.8)' }}>
-          Delete Account
-        </h3>
-        <p className="font-body font-light mb-4" style={{ fontSize: '12px', color: 'rgba(26,18,8,0.4)' }}>
-          This action is permanent and cannot be undone.
-        </p>
-        <button className="btn-ghost" style={{ color: 'rgba(160,80,80,0.7)', borderColor: 'rgba(160,80,80,0.3)' }}>
-          Delete Account
-        </button>
-      </div>
     </div>
   )
 }

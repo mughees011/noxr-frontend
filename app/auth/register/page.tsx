@@ -40,39 +40,26 @@ export default function RegisterPage() {
   }
 
   try {
-    setFormState('loading')
-    setErrorMsg('')
+  setFormState('loading')
+  setErrorMsg('')
 
-    const res = await fetch(`${API_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: `${form.firstName} ${form.lastName}`.trim(),
-        email: form.email,
-        password: form.password,
-        role: 'user'
-      })
-    })
+  const data = await api.post('/auth/register', {
+    name: `${form.firstName} ${form.lastName}`.trim(),
+    email: form.email,
+    password: form.password,
+    role: 'user'
+  })
 
-    const data = await res.json()
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Registration failed')
-    }
-
-    // Save token if backend returns it
-    if (data.token) {
-      localStorage.setItem('noxr_user_token', data.token)
-    }
-
-    setFormState('success')
-
-  } catch (err: any) {
-    setErrorMsg(err.message)
-    setFormState('error')
+  if (data.token) {
+    localStorage.setItem('noxr_user_token', data.token)
   }
+
+  setFormState('success')
+
+} catch (err: any) {
+  setErrorMsg(err.message)
+  setFormState('error')
+}
 }
 
 

@@ -360,26 +360,20 @@ function PaymentStep({
     setDiscountError('')
 
     try {
-      const res = await fetch(`${API_URL}/api/discounts/validate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: discountCode,
-          orderAmount: subtotal,
-          userEmail: shipping.email,
-          cartItems: items.map((i: any) => ({ productId: i.productId }))
-        })
-      })
+      const data = await api.post('/discounts/validate', {
+  code: discountCode,
+  orderAmount: subtotal,
+  userEmail: shipping.email,
+  cartItems: items.map((i: any) => ({ productId: i.productId }))
+})
 
-      const data = await res.json()
-
-      if (data.valid) {
-        setAppliedDiscount(data)
-        setDiscountError('')
-      } else {
-        setDiscountError(data.message || 'Invalid discount code')
-        setAppliedDiscount(null)
-      }
+if (data.valid) {
+  setAppliedDiscount(data)
+  setDiscountError('')
+} else {
+  setDiscountError(data.message || 'Invalid discount code')
+  setAppliedDiscount(null)
+}
     } catch (error) {
       setDiscountError('Failed to validate discount code')
       setAppliedDiscount(null)
@@ -406,56 +400,43 @@ function PaymentStep({
       setLoading(true)
       const token = localStorage.getItem('noxr_user_token')
 
-      const res = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
-        },
-        body: JSON.stringify({
-          items: items.map((i: any) => ({
-            productId: i.productId,
-            name: i.name,
-            size: i.size,
-            color: i.color,
-            quantity: i.quantity,
-            price: i.price,
-            image: i.image
-          })),
-          total,
-          subtotal,
-          shippingFee,
-          discount: appliedDiscount ? {
-            code: appliedDiscount.code,
-            amount: appliedDiscount.discountAmount
-          } : null,
-          email: shipping.email,
-          shippingAddress: {
-            fullName: `${shipping.firstName} ${shipping.lastName}`,
-            phone: shipping.phone,
-            address: shipping.address,
-            city: shipping.city,
-            province: shipping.province,
-            postalCode: shipping.postal,
-          },
-          paymentMethod: data.method,
-        }),
-      })
+      const order = await api.post('/orders', {
+  items: items.map((i: any) => ({
+    productId: i.productId,
+    name: i.name,
+    size: i.size,
+    color: i.color,
+    quantity: i.quantity,
+    price: i.price,
+    image: i.image
+  })),
+  total,
+  subtotal,
+  shippingFee,
+  discount: appliedDiscount ? {
+    code: appliedDiscount.code,
+    amount: appliedDiscount.discountAmount
+  } : null,
+  email: shipping.email,
+  shippingAddress: {
+    fullName: `${shipping.firstName} ${shipping.lastName}`,
+    phone: shipping.phone,
+    address: shipping.address,
+    city: shipping.city,
+    province: shipping.province,
+    postalCode: shipping.postal,
+  },
+  paymentMethod: data.method,
+})
 
-      if (!res.ok) throw new Error('Order failed')
-      const order = await res.json()
 
       // Apply discount usage if discount was used
       if (appliedDiscount) {
-        await fetch(`${API_URL}/api/discounts/apply`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code: appliedDiscount.code,
-            orderId: order.orderId,
-            userEmail: shipping.email
-          })
-        })
+        await api.post('/discounts/apply', {
+  code: appliedDiscount.code,
+  orderId: order.orderId,
+  userEmail: shipping.email
+})
       }
 
       dispatch(clearCart())
@@ -597,25 +578,15 @@ function OrderSummary({
     setDiscountError('')
 
     try {
-      const res = await fetch(`${API_URL}/api/discounts/validate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: discountCode.trim(),
-          orderAmount: subtotal,
-          userEmail: shipping.email,
-          cartItems: items.map((i: any) => ({
-            productId: i.productId,
-            quantity: i.quantity
-          }))
-        })
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Validation failed')
-      }
+      const data = await api.post('/discounts/validate', {
+  code: discountCode.trim(),
+  orderAmount: subtotal,
+  userEmail: shipping.email,
+  cartItems: items.map((i: any) => ({
+    productId: i.productId,
+    quantity: i.quantity
+  }))
+})
 
       if (data.valid) {
         setAppliedDiscount({

@@ -54,15 +54,7 @@ export default function ContactPage() {
   setFormState('submitting')
 
   try {
-    const res = await fetch(`${API_URL}/api/contact`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(form)
-    })
-
-    if (!res.ok) throw new Error('Failed')
+    await api.post('/contact', form)
 
     setFormState('success')
     setForm({ name: '', email: '', subject: '', message: '' })

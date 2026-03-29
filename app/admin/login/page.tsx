@@ -1,6 +1,6 @@
 'use client'
 
-import { adminAPI } from '@/lib/api'
+import { adminApi } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -26,7 +26,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   setErrorMsg('')
 
   try {
-    const res = await adminAPI.login({
+    const res = await adminApi.post('/admin/login', {
       email: form.email,
       password: form.password,
     })
