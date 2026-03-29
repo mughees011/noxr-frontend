@@ -58,7 +58,8 @@ export const api = {
 
 export const adminApi = {
   get: (endpoint: string) => request(endpoint, 'GET', null, true),
-
+  post: (endpoint: string, data?: any) => request(endpoint, 'POST', data, true),
+  
   stats: () => request('/api/admin/stats', 'GET', null, true),
   recentOrders: () => request('/api/admin/orders/recent', 'GET', null, true),
   lowStock: () => request('/api/admin/products/low-stock', 'GET', null, true),

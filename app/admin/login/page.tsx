@@ -22,18 +22,18 @@ export default function AdminLoginPage() {
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
+  
+  try {
   setFormState('loading')
   setErrorMsg('')
 
-  try {
-    const res = await adminApi.post('/admin/login', {
+    const data = await adminApi.post('/admin/login', {
       email: form.email,
-      password: form.password,
+      password: form.password
     })
 
-    const { token } = res.data
 
-    localStorage.setItem('noxr_admin_token', token)
+    localStorage.setItem('noxr_admin_token', data.token)
 
     router.push('/admin/dashboard')
 
