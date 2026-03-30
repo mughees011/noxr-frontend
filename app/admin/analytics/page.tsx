@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { adminApi } from '@/lib/api'
 
 const LineChart = dynamic(() => import('recharts').then(m => m.LineChart), { ssr: false })
 const Line = dynamic(() => import('recharts').then(m => m.Line), { ssr: false })
@@ -40,12 +41,8 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/admin/analytics?range=${timeRange}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-          }
-        })
-        const data = await res.json()
+        const data = await adminApi.get(`/admin/analytics?range=${timeRange}`)
+
         setAnalytics(data)
       } catch (error) {
         console.error('Analytics fetch error:', error)

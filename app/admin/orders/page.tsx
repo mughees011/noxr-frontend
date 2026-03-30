@@ -1,5 +1,5 @@
 'use client'
-
+import { adminApi } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -43,13 +43,8 @@ export default function AdminOrdersPage() {
         return
       }
 
-      const res = await fetch('http://localhost:5000/api/admin/orders', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      const data = await adminApi.get('/admin/orders')
 
-      const data = await res.json()
       if (Array.isArray(data)) {
         setOrders(data)
       }
@@ -73,17 +68,9 @@ export default function AdminOrdersPage() {
 
   const token = localStorage.getItem('noxr_admin_token')
 
-  const res = await fetch(
-    `http://localhost:5000/api/admin/orders/${orderId}/tracking`,
-    {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ trackingNumber })
-    }
-  )
+  const res = await adminApi.post(`/admin/orders/${orderId}/tracking`, {
+  trackingNumber
+})
 
   if (!res.ok) {
     const err = await res.json()
@@ -113,8 +100,7 @@ export default function AdminOrdersPage() {
 
   const token = localStorage.getItem('noxr_admin_token')
 
-  const res = await fetch(
-    `http://localhost:5000/api/admin/orders/${orderId}/status`,
+  const res = await adminApi.post(`/admin/orders/${orderId}/status`,
     {
       method: 'PUT',
       headers: {

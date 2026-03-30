@@ -1,5 +1,5 @@
 'use client'
-
+import { adminApi } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -32,12 +32,8 @@ export default function ReturnsManagerPage() {
   useEffect(() => {
     const fetchReturns = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/admin/returns', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-          }
-        })
-        const data = await res.json()
+        const data = await adminApi.get('/admin/returns')
+
         setReturns(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Returns fetch error:', error)
@@ -55,14 +51,9 @@ export default function ReturnsManagerPage() {
 
   const handleStatusUpdate = async (returnId: string, status: ReturnStatus) => {
     try {
-      await fetch(`http://localhost:5000/api/admin/returns/${returnId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-        },
-        body: JSON.stringify({ status, dateProcessed: new Date().toISOString() })
-      })
+      await adminApi.put(`/admin/returns/${returnId}/status`, {
+  status: status
+})
 
       setReturns(prev => prev.map(r =>
         r._id === returnId ? { ...r, status, dateProcessed: new Date().toISOString() } : r

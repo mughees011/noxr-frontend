@@ -1,5 +1,5 @@
 'use client'
-
+import { adminApi } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -25,13 +25,7 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     const fetchSettings = async () => {
-      const res = await fetch('http://localhost:5000/api/admin/settings', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-        }
-      })
-
-      const data = await res.json()
+      const data = await adminApi.get('/admin/settings')
 
       setCurrency(data.currency || 'PKR')
       setTaxRate(data.taxRate?.toString() || '0')
@@ -51,26 +45,7 @@ export default function AdminSettingsPage() {
   e.preventDefault()
 
   try {
-    await fetch('http://localhost:5000/api/admin/settings', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-      },
-      body: JSON.stringify({
-        currency,
-        taxRate: Number(taxRate),
-        freeShippingThreshold: Number(freeShippingThreshold),
-        supportEmail,
-        phone,
-        warehouseAddress,
-        socialLinks: {
-          instagram,
-          tiktok,
-          twitter
-        }
-      })
-    })
+    await adminApi.put('/admin/settings', { currency, taxRate: Number(taxRate), freeShippingThreshold: Number(freeShippingThreshold), supportEmail, phone, warehouseAddress, socialLinks: { instagram, tiktok, twitter } })
 
     alert('Settings saved')
   } catch (error) {

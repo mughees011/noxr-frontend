@@ -1,5 +1,5 @@
 'use client'
-
+import { adminApi } from '@/lib/api'
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react'
 
 type Variant = { size: string; color: string; stock: number }
@@ -62,8 +62,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     ;(async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products')
-        const data = await res.json()
+        const data = await adminApi.get('/products')
         if (!Array.isArray(data)) return
         setProducts(data.map(normalizeProduct))
       } catch {
@@ -94,10 +93,8 @@ export default function AdminProductsPage() {
 
   const handleDelete = async (id?: string) => {
     if (!id || !confirm('Delete this product?')) return
-    await fetch(`http://localhost:5000/api/products/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}` },
-    })
+    await adminApi.delete(`/products/${id}`)
+
     setProducts(prev => prev.filter(p => p._id !== id))
     setSelectedIds(prev => prev.filter(x => x !== id))
   }
@@ -112,21 +109,15 @@ export default function AdminProductsPage() {
     for (const product of selected) {
       if (!product._id) continue
       if (action === 'delete') {
-        await fetch(`http://localhost:5000/api/products/${product._id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        await adminApi.delete(`/products/${product._id}`)
+
       } else {
         const payload =
           action === 'publish'
             ? { ...product, status: 'published' as const }
             : { ...product, featured: true }
 
-        await fetch(`http://localhost:5000/api/products/${product._id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify(payload),
-        })
+        await adminApi.put(`/products/${product._id}`, payload)
       }
     }
 
@@ -244,11 +235,8 @@ export default function AdminProductsPage() {
               onSave={async form => {
                 const token = localStorage.getItem('noxr_admin_token')
                 const payload = prepareForSave(form)
-                const res = await fetch('http://localhost:5000/api/products', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify(payload),
-                })
+                const res = await adminApi.post('/products', payload)
+                
                 if (!res.ok) return alert('Failed to create product (slug may already exist).')
                 const created = normalizeProduct(await res.json())
                 setProducts(prev => [created, ...prev])
@@ -266,11 +254,8 @@ export default function AdminProductsPage() {
               onSave={async form => {
                 const token = localStorage.getItem('noxr_admin_token')
                 const payload = prepareForSave(form)
-                const res = await fetch(`http://localhost:5000/api/products/${form._id}`, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-                  body: JSON.stringify(payload),
-                })
+                const res = await adminApi.put(`/products/${editingProduct._id}`, payload)
+                
                 if (!res.ok) return alert('Failed to update product (slug may already exist).')
                 const updated = normalizeProduct(await res.json())
                 setProducts(prev => prev.map(p => (p._id === updated._id ? updated : p)))

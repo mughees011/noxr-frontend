@@ -29,16 +29,15 @@ export default function CollectionsPage() {
   }, [])
 
   const fetchCollections = async () => {
-    try {
-      const res = await fetch(`/collections`)
-      const data = await res.json()
-      setCollections(Array.isArray(data) ? data : [])
-    } catch (error) {
-      console.error('Failed to fetch collections:', error)
-    } finally {
-      setLoading(false)
-    }
+  try {
+    const data = await api.get('/collections')
+    setCollections(Array.isArray(data) ? data : [])
+  } catch (error) {
+    console.error('Failed to fetch collections:', error)
+  } finally {
+    setLoading(false)
   }
+}
 
   if (loading) {
     return (

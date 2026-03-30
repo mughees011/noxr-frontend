@@ -1,9 +1,8 @@
 'use client'
-
+import { adminApi } from '@/lib/api'
 import { useMemo, useEffect, useState, type CSSProperties, type FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-
 
 type SupportMessage = {
   id: string
@@ -15,7 +14,6 @@ type SupportMessage = {
   status: 'new' | 'replied'
   adminReply?: string
 }
-
 
 export default function AdminSupportPage() {
   const router = useRouter()
@@ -38,17 +36,9 @@ export default function AdminSupportPage() {
 
   if (!selectedMessage || !replyText.trim()) return
 
-  await fetch(
-    `http://localhost:5000/api/admin/support/${selectedMessage.id}/reply`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-      },
-      body: JSON.stringify({ reply: replyText.trim() })
-    }
-  )
+  await adminApi.post(`/admin/support/${selectedMessage.id}/reply`, {
+  message: replyText
+})
 
   setMessages(prev =>
     prev.map(message =>
@@ -65,12 +55,7 @@ export default function AdminSupportPage() {
 
   useEffect(() => {
   const fetchMessages = async () => {
-    const res = await fetch('http://localhost:5000/api/admin/support', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-      }
-    })
-
+    const res = await adminApi.get('/admin/support')
     const data = await res.json()
     setMessages(data)
   }

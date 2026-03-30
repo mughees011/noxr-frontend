@@ -1,5 +1,4 @@
 'use client'
-
 import { adminApi } from '@/lib/api'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -31,9 +30,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       email: form.email,
       password: form.password
     })
-
-
-    localStorage.setItem('noxr_admin_token', data.token)
+    const token = data?.token || data?.accessToken
+    
+    // localStorage.setItem('noxr_admin_token', data.token)
 
     router.push('/admin/dashboard')
 

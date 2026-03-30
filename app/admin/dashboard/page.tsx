@@ -1,9 +1,8 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { adminApi } from '@/lib/api';
+import { adminApi } from '@/lib/api'
 
 export default function AdminDashboardPage() {
   const router = useRouter()
@@ -18,10 +17,10 @@ export default function AdminDashboardPage() {
       const statsRes = await adminApi.get('/admin/stats')
       setStats(statsRes.data || statsRes)
 
-      const ordersRes = await adminApi.get('/admin/orders/recent')
+      const ordersRes = await adminApi.get('/admin/recent-orders')
       setRecentOrders(ordersRes.data || ordersRes)
 
-      const lowStockRes = await adminApi.get('/admin/products/low-stock')
+      const lowStockRes = await adminApi.get('/admin/low-stock')
       setLowStock(lowStockRes.data || lowStockRes)
 
       setLoaded(true)

@@ -37,22 +37,10 @@ export default function TrackOrderPage() {
   setTrackingState('loading')
 
   try {
-    const res = await fetch(`/orders/track`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        orderId: form.orderId,
-        email: form.email
-      })
-    })
-
-    if (!res.ok) {
-      throw new Error()
-    }
-
-    const data = await res.json()
+    const data = await api.post('/orders/track', {
+  orderId: form.orderId.trim(),
+  email: form.email.trim()
+})
     setOrderData(data)
     setTrackingState('found')
 

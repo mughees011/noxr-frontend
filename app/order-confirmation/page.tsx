@@ -71,7 +71,7 @@ function OrderConfirmationContent() {
 
     const fetchOrder = async () => {
       try {
-        const data = await api.post('/api/orders/track', {
+        const data = await api.post('/orders/track', {
           orderId,
           email,
         })

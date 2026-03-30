@@ -1,545 +1,6 @@
-// 'use client'
-
-// import { useState, useEffect } from 'react'
-// import Link from 'next/link'
-// import { useRouter } from 'next/navigation'
-
-// interface Collection {
-//   _id: string
-//   name: string
-//   description: string
-//   slug: string
-//   releaseDate: string
-//   isLive: boolean
-//   isFeatured: boolean
-//   productIds: string[]
-//   image: string
-//   createdAt: string
-// }
-
-// interface Product {
-//   _id: string
-//   name: string
-//   [key: string]: any
-// }
-
-// interface CollectionCardProps {
-//   collection: Collection
-//   onEdit: () => void
-//   onDelete: () => void
-//   onToggleLive: () => void
-//   onToggleFeatured: () => void
-//   productCount: number
-// }
-
-// interface CollectionModalProps {
-//   mode: 'create' | 'edit'
-//   collection?: Collection
-//   products: Product[]
-//   onClose: () => void
-//   onSave: (collection: Collection) => Promise<void>
-// }
-
-// interface FormFieldProps {
-//   label: string
-//   type: string
-//   value: string
-//   onChange: (value: string) => void
-//   placeholder?: string
-//   required?: boolean
-// }
-
-// interface AdminSidebarProps {
-//   active: string
-// }
-
-// interface NavItem {
-//   key: string
-//   label: string
-//   href: string
-// }
-
-// export default function CollectionsManagerPage() {
-//   const router = useRouter()
-//   const [collections, setCollections] = useState<Collection[]>([])
-//   const [products, setProducts] = useState<any[]>([])
-//   const [loading, setLoading] = useState(true)
-//   const [showCreateModal, setShowCreateModal] = useState(false)
-//   const [editingCollection, setEditingCollection] = useState<Collection | null>(null)
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const [collectionsRes, productsRes] = await Promise.all([
-//           fetch('http://localhost:5000/api/collections'),
-//           fetch('http://localhost:5000/api/products')
-//         ])
-        
-//         const collectionsData = await collectionsRes.json()
-//         const productsData = await productsRes.json()
-        
-//         setCollections(Array.isArray(collectionsData) ? collectionsData : [])
-//         setProducts(Array.isArray(productsData) ? productsData : [])
-//       } catch (error) {
-//         console.error('Fetch error:', error)
-//       } finally {
-//         setLoading(false)
-//       }
-//     }
-
-//     fetchData()
-//   }, [])
-
-//   const handleDelete = async (id: string) => {
-//     if (!confirm('Delete this collection? This cannot be undone.')) return
-
-//     await fetch(`http://localhost:5000/api/collections/${id}`, {
-//       method: 'DELETE',
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-//       }
-//     })
-
-//     setCollections(prev => prev.filter(c => c._id !== id))
-//   }
-
-//   const toggleLive = async (collection: Collection) => {
-//     const updated = { ...collection, isLive: !collection.isLive }
-    
-//     await fetch(`http://localhost:5000/api/collections/${collection._id}`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-//       },
-//       body: JSON.stringify(updated)
-//     })
-
-//     setCollections(prev => prev.map(c => c._id === collection._id ? updated : c))
-//   }
-
-//   const toggleFeatured = async (collection: Collection) => {
-//     const updated = { ...collection, isFeatured: !collection.isFeatured }
-    
-//     await fetch(`http://localhost:5000/api/collections/${collection._id}`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-//       },
-//       body: JSON.stringify(updated)
-//     })
-
-//     setCollections(prev => prev.map(c => c._id === collection._id ? updated : c))
-//   }
-
-//   return (
-//     <div className="min-h-screen" style={{ backgroundColor: '#F7F3ED' }}>
-
-//       <div style={{ display: 'flex', minHeight: 'calc(100vh - 68px)' }}>
-
-//         <div style={{ flex: 1, padding: '48px 52px', overflowX: 'auto' }}>
-          
-//           {/* Header */}
-//           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px', gap: '24px', flexWrap: 'wrap' }}>
-//             <div>
-//               <p className="overline mb-3">Drops</p>
-//               <h1
-//                 className="font-display font-light text-[#1A1208]"
-//                 style={{ fontSize: 'clamp(36px, 5vw, 56px)', lineHeight: 1, letterSpacing: '-0.02em', marginBottom: '8px' }}
-//               >
-//                 Collections
-//               </h1>
-//               <p className="overline" style={{ color: 'rgba(26,18,8,0.3)' }}>
-//                 {collections.length} {collections.length === 1 ? 'Collection' : 'Collections'}
-//               </p>
-//             </div>
-
-//             <button
-//               onClick={() => setShowCreateModal(true)}
-//               className="btn-primary"
-//               style={{ marginTop: '8px' }}
-//             >
-//               <span>+ Create Collection</span>
-//             </button>
-//           </div>
-
-//           {/* Collections Grid */}
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//             {collections.map((collection) => (
-//               <CollectionCard
-//                 key={collection._id}
-//                 collection={collection}
-//                 onEdit={() => setEditingCollection(collection)}
-//                 onDelete={() => handleDelete(collection._id)}
-//                 onToggleLive={() => toggleLive(collection)}
-//                 onToggleFeatured={() => toggleFeatured(collection)}
-//                 productCount={collection.productIds?.length || 0}
-//               />
-//             ))}
-//           </div>
-
-//           {collections.length === 0 && !loading && (
-//             <div className="text-center py-20">
-//               <p className="font-body font-light" style={{ fontSize: '13px', color: 'rgba(26,18,8,0.3)' }}>
-//                 No collections yet. Create your first drop.
-//               </p>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Modals */}
-//       {showCreateModal && (
-//         <CollectionModal
-//           mode="create"
-//           products={products}
-//           onClose={() => setShowCreateModal(false)}
-//           onSave={async (newCollection: Collection) => {
-//             const res = await fetch('http://localhost:5000/api/collections', {
-//               method: 'POST',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//                 Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-//               },
-//               body: JSON.stringify(newCollection)
-//             })
-
-//             const created = await res.json()
-//             setCollections(prev => [...prev, created])
-//             setShowCreateModal(false)
-//           }}
-//         />
-//       )}
-
-//       {editingCollection && (
-//         <CollectionModal
-//           mode="edit"
-//           collection={editingCollection}
-//           products={products}
-//           onClose={() => setEditingCollection(null)}
-//           onSave={async (updated: Collection) => {
-//             const res = await fetch(`http://localhost:5000/api/collections/${updated._id}`, {
-//               method: 'PUT',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//                 Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-//               },
-//               body: JSON.stringify(updated)
-//             })
-
-//             const data = await res.json()
-//             setCollections(prev => prev.map(c => c._id === data._id ? data : c))
-//             setEditingCollection(null)
-//           }}
-//         />
-//       )}
-//     </div>
-//   )
-// }
-
-// function CollectionCard({ collection, onEdit, onDelete, onToggleLive, onToggleFeatured, productCount }: any) {
-//   const isUpcoming = new Date(collection.releaseDate) > new Date()
-//   const releaseDate = new Date(collection.releaseDate).toLocaleDateString('en-US', {
-//     month: 'short',
-//     day: 'numeric',
-//     year: 'numeric',
-//   })
-
-//   return (
-//     <div className="border" style={{ borderColor: 'rgba(26,18,8,0.08)' }}>
-//       {/* Image */}
-//       <div
-//         className="relative bg-[#EDE7DC]"
-//         style={{ aspectRatio: '4/3' }}
-//       >
-//         {collection.image && (
-//           <div
-//             style={{
-//               position: 'absolute',
-//               inset: 0,
-//               backgroundImage: `url('${collection.image}')`,
-//               backgroundSize: 'cover',
-//               backgroundPosition: 'center',
-//               filter: 'brightness(0.95) saturate(0.85)',
-//             }}
-//           />
-//         )}
-        
-//         {/* Badges */}
-//         <div className="absolute top-3 left-3 flex flex-col gap-2">
-//           {collection.isFeatured && (
-//             <span
-//               className="px-2 py-1 overline"
-//               style={{ backgroundColor: '#1A1208', color: '#F7F3ED', fontSize: '7px' }}
-//             >
-//               Featured
-//             </span>
-//           )}
-//           {!collection.isLive && (
-//             <span
-//               className="px-2 py-1 overline"
-//               style={{ backgroundColor: 'rgba(180,130,50,0.9)', color: '#F7F3ED', fontSize: '7px' }}
-//             >
-//               Hidden
-//             </span>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Content */}
-//       <div className="p-5">
-//         <h3
-//           className="font-display font-light text-[#1A1208] mb-2"
-//           style={{ fontSize: '20px' }}
-//         >
-//           {collection.name}
-//         </h3>
-        
-//         <div className="space-y-2 mb-4">
-//           <p className="font-body font-light" style={{ fontSize: '11px', color: 'rgba(26,18,8,0.4)' }}>
-//             {productCount} {productCount === 1 ? 'product' : 'products'}
-//           </p>
-//           <p className="font-body font-light" style={{ fontSize: '11px', color: 'rgba(26,18,8,0.4)' }}>
-//             Release: {releaseDate}
-//             {isUpcoming && (
-//               <span style={{ color: 'rgba(180,130,50,0.8)', marginLeft: '6px' }}>
-//                 (Upcoming)
-//               </span>
-//             )}
-//           </p>
-//         </div>
-
-//         {/* Actions */}
-//         <div className="flex flex-wrap gap-2 pt-4 border-t" style={{ borderColor: 'rgba(26,18,8,0.08)' }}>
-//           <button
-//             onClick={onEdit}
-//             className="btn-ghost flex-1"
-//             style={{ fontSize: '9px', padding: '8px' }}
-//           >
-//             Edit
-//           </button>
-//           <button
-//             onClick={onToggleLive}
-//             className="btn-ghost flex-1"
-//             style={{ fontSize: '9px', padding: '8px' }}
-//           >
-//             {collection.isLive ? 'Hide' : 'Go Live'}
-//           </button>
-//           <button
-//             onClick={onToggleFeatured}
-//             className="btn-ghost flex-1"
-//             style={{ fontSize: '9px', padding: '8px' }}
-//           >
-//             {collection.isFeatured ? 'Unfeature' : 'Feature'}
-//           </button>
-//           <button
-//             onClick={onDelete}
-//             className="btn-ghost"
-//             style={{ fontSize: '9px', padding: '8px', color: 'rgba(160,80,80,0.7)', borderColor: 'rgba(160,80,80,0.2)' }}
-//           >
-//             Delete
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// function CollectionModal({ mode, collection, products, onClose, onSave }: any) {
-//   const [form, setForm] = useState<any>(
-//     collection ?? {
-//       name: '',
-//       description: '',
-//       slug: '',
-//       releaseDate: new Date().toISOString().split('T')[0],
-//       isLive: false,
-//       isFeatured: false,
-//       productIds: [],
-//       image: '',
-//     }
-//   )
-
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault()
-//     // Auto-generate slug if empty
-//     if (!form.slug) {
-//       form.slug = form.name.toLowerCase().replace(/\s+/g, '-')
-//     }
-//     onSave(form)
-//   }
-
-//   return (
-//     <div
-//       className="fixed inset-0 bg-[rgba(26,18,8,0.6)] flex items-center justify-center z-50 p-5"
-//       onClick={onClose}
-//     >
-//       <div
-//         onClick={e => e.stopPropagation()}
-//         className="bg-[#F7F3ED] max-w-[600px] w-full max-h-[90vh] overflow-y-auto p-10"
-//       >
-//         <button
-//           onClick={onClose}
-//           className="absolute top-5 right-5"
-//           style={{ fontSize: '24px', color: 'rgba(26,18,8,0.3)' }}
-//         >
-//           ×
-//         </button>
-
-//         <h2
-//           className="font-display font-light text-[#1A1208] mb-8"
-//           style={{ fontSize: '32px', letterSpacing: '-0.01em' }}
-//         >
-//           {mode === 'create' ? 'Create Collection' : 'Edit Collection'}
-//         </h2>
-
-//         <form onSubmit={handleSubmit} className="space-y-6">
-          
-//           <FormField
-//             label="Collection Name"
-//             type="text"
-//             value={form.name}
-//             onChange={(v: string) => setForm({ ...form, name: v })}
-//             placeholder="Winter Drop 2026"
-//             required
-//           />
-
-//           <FormField
-//             label="Description"
-//             type="text"
-//             value={form.description}
-//             onChange={(v: string) => setForm({ ...form, description: v })}
-//             placeholder="Limited winter essentials..."
-//             required
-//           />
-
-//           <FormField
-//             label="Slug"
-//             type="text"
-//             value={form.slug}
-//             onChange={(v: string) => setForm({ ...form, slug: v })}
-//             placeholder="winter-drop-2026 (auto-generated if empty)"
-//           />
-
-//           <FormField
-//             label="Release Date"
-//             type="date"
-//             value={form.releaseDate}
-//             onChange={(v: string) => setForm({ ...form, releaseDate: v })}
-//             required
-//           />
-
-//           <FormField
-//             label="Cover Image URL"
-//             type="text"
-//             value={form.image}
-//             onChange={(v: string) => setForm({ ...form, image: v })}
-//             placeholder="https://..."
-//           />
-
-//           {/* Product Selection */}
-//           <div>
-//             <p className="overline mb-3" style={{ color: 'rgba(26,18,8,0.35)' }}>
-//               Assign Products ({form.productIds.length} selected)
-//             </p>
-//             <div className="max-h-[200px] overflow-y-auto border p-4 space-y-2" style={{ borderColor: 'rgba(26,18,8,0.15)' }}>
-//               {products.map((product: any) => (
-//                 <label
-//                   key={product._id}
-//                   className="flex items-center gap-3 cursor-pointer"
-//                 >
-//                   <input
-//                     type="checkbox"
-//                     checked={form.productIds.includes(product._id)}
-//                     onChange={e => {
-//                       if (e.target.checked) {
-//                         setForm({ ...form, productIds: [...form.productIds, product._id] })
-//                       } else {
-//                         setForm({ ...form, productIds: form.productIds.filter((id: string) => id !== product._id) })
-//                       }
-//                     }}
-//                   />
-//                   <span className="font-body font-light" style={{ fontSize: '12px' }}>
-//                     {product.name}
-//                   </span>
-//                 </label>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* Toggles */}
-//           <div className="space-y-3">
-//             <label className="flex items-center gap-3">
-//               <input
-//                 type="checkbox"
-//                 checked={form.isLive}
-//                 onChange={e => setForm({ ...form, isLive: e.target.checked })}
-//               />
-//               <span className="font-body font-light" style={{ fontSize: '12px' }}>
-//                 Make live immediately
-//               </span>
-//             </label>
-
-//             <label className="flex items-center gap-3">
-//               <input
-//                 type="checkbox"
-//                 checked={form.isFeatured}
-//                 onChange={e => setForm({ ...form, isFeatured: e.target.checked })}
-//               />
-//               <span className="font-body font-light" style={{ fontSize: '12px' }}>
-//                 Mark as featured
-//               </span>
-//             </label>
-//           </div>
-
-//           <div className="flex gap-3 pt-4">
-//             <button type="submit" className="btn-primary flex-1">
-//               <span>{mode === 'create' ? 'Create Collection' : 'Save Changes'}</span>
-//             </button>
-//             <button type="button" onClick={onClose} className="btn-ghost flex-1">
-//               Cancel
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   )
-// }
-
-// function FormField({ label, type, value, onChange, placeholder, required }: any) {
-//   return (
-//     <div>
-//       <p className="overline mb-3" style={{ color: 'rgba(26,18,8,0.35)' }}>
-//         {label} {required && <span style={{ color: 'rgba(160,80,80,0.6)' }}>*</span>}
-//       </p>
-//       <input
-//         type={type}
-//         required={required}
-//         value={value}
-//         onChange={e => onChange(e.target.value)}
-//         placeholder={placeholder}
-//         className="w-full bg-transparent border-b outline-none"
-//         style={{
-//           borderColor: 'rgba(26,18,8,0.2)',
-//           padding: '12px 0',
-//           fontFamily: "'Jost', sans-serif",
-//           fontSize: '14px',
-//           fontWeight: 300,
-//           color: '#1A1208',
-//         }}
-//       />
-//     </div>
-//   )
-// }
-
-
-
-
-
-
 'use client'
-
 import { useState, useEffect } from 'react'
+import { adminApi } from '@/lib/api'
 
 export default function AdminCollectionsPage() {
   const [collections, setCollections] = useState<any[]>([])
@@ -554,13 +15,15 @@ export default function AdminCollectionsPage() {
 
   const fetchData = async () => {
     try {
-      const [collectionsRes, productsRes] = await Promise.all([
-        fetch('http://localhost:5000/api/collections/admin/all'),
-        fetch('http://localhost:5000/api/products')
-      ])
+      // const [collectionsRes, productsRes] = await Promise.all([
+      //   fetch('http://localhost:5000/api/collections/admin/all'),
+      //   fetch('http://localhost:5000/api/products')
+      // ])
       
-      const collectionsData = await collectionsRes.json()
-      const productsData = await productsRes.json()
+      const [collectionsData, productsData] = await Promise.all([
+  adminApi.get('/collections/admin/all'),
+  adminApi.get('/products')
+])
       
       setCollections(Array.isArray(collectionsData) ? collectionsData : [])
       setProducts(Array.isArray(productsData) ? productsData : [])
@@ -574,29 +37,19 @@ export default function AdminCollectionsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this collection? This cannot be undone.')) return
 
-    await fetch(`http://localhost:5000/api/collections/${id}`, {
-      method: 'DELETE',
-    })
+    await adminApi.delete(`/collections/${id}`)
 
     fetchData()
   }
 
   const toggleLive = async (collection: any) => {
-    await fetch(`http://localhost:5000/api/collections/${collection._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...collection, isLive: !collection.isLive })
-    })
+    await adminApi.put(`/collections/${collection._id}`, { ...collection, isLive: !collection.isLive })
 
     fetchData()
   }
 
   const toggleFeatured = async (collection: any) => {
-    await fetch(`http://localhost:5000/api/collections/${collection._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...collection, isFeatured: !collection.isFeatured })
-    })
+    await adminApi.put(`/collections/${collection._id}`, { ...collection, isFeatured: !collection.isFeatured })
 
     fetchData()
   }
@@ -652,22 +105,21 @@ export default function AdminCollectionsPage() {
           products={products}
           onClose={() => { setShowModal(false); setEditingCollection(null) }}
           onSave={async (data: any) => {
-            const url = editingCollection 
-              ? `http://localhost:5000/api/collections/${editingCollection._id}`
-              : 'http://localhost:5000/api/collections'
-            
-            const method = editingCollection ? 'PUT' : 'POST'
+  try {
+    if (editingCollection) {
+      await adminApi.put(`/collections/${editingCollection._id}`, data)
+    } else {
+      await adminApi.post(`/collections`, data)
+    }
 
-            await fetch(url, {
-              method,
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(data)
-            })
-
-            setShowModal(false)
-            setEditingCollection(null)
-            fetchData()
-          }}
+    setShowModal(false)
+    setEditingCollection(null)
+    fetchData()
+  } catch (err) {
+    console.error('Save error:', err)
+    alert('Failed to save collection')
+  }
+}}
         />
       )}
     </div>

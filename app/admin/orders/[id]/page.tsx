@@ -1,7 +1,7 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { adminApi } from '@/lib/api'
 
 export default function AdminOrderDetail() {
   const { id } = useParams();
@@ -18,16 +18,8 @@ export default function AdminOrderDetail() {
         return;
       }
 
-      const res = await fetch(
-        `http://localhost:5000/api/admin/orders/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const data = await adminApi.get(`/admin/orders/${id}`)
 
-      const data = await res.json();
       setOrder(data);
       setTracking(data.trackingNumber || "");
     };
@@ -40,17 +32,8 @@ export default function AdminOrderDetail() {
   const updateStatus = async (status: string) => {
     const token = localStorage.getItem("noxr_admin_token");
 
-    await fetch(
-      `http://localhost:5000/api/admin/orders/${id}/status`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      }
-    );
+    await adminApi.put(`/admin/orders/${id}/status`, { status })
+
 
     setOrder({ ...order, status });
   };
@@ -58,17 +41,8 @@ export default function AdminOrderDetail() {
   const updateTracking = async () => {
     const token = localStorage.getItem("noxr_admin_token");
 
-    await fetch(
-      `http://localhost:5000/api/admin/orders/${id}/tracking`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ trackingNumber: tracking }),
-      }
-    );
+    await adminApi.put(`/admin/orders/${id}/tracking`, { trackingNumber: tracking })
+
   };
 
   return (

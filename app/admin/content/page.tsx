@@ -1,8 +1,8 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { adminApi } from '@/lib/api'
 
 type Section = 'homepage' | 'about' | 'sustainability' | 'footer'
 
@@ -70,12 +70,8 @@ export default function ContentManagerPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/admin/content', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-          }
-        })
-        const data = await res.json()
+        const data = await adminApi.get('/admin/content')
+
         if (data) {
   setContent({
     homepage: data.homepage || {
@@ -115,14 +111,7 @@ export default function ContentManagerPage() {
     setSaving(true)
     
     try {
-      await fetch('http://localhost:5000/api/admin/content', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-        },
-        body: JSON.stringify(content)
-      })
+      await adminApi.post('/admin/content', content)
       
       alert('Content saved successfully')
     } catch (error) {

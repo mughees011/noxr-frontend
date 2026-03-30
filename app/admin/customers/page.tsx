@@ -1,8 +1,8 @@
 'use client'
-
 import { useMemo, useState, useEffect, type CSSProperties, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { adminApi } from '@/lib/api'
 
 type CustomerStatus = 'active' | 'blocked' | 'vip'
 type SegmentFilter = 'all' | 'first_time' | 'repeat' | 'high_spender' | 'inactive_90' | 'high_return'
@@ -87,13 +87,8 @@ export default function AdminCustomersPage() {
 
   useEffect(() => {
   const fetchCustomers = async () => {
-    const res = await fetch('http://localhost:5000/api/admin/customers', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-      }
-    })
+    const data = await adminApi.get('/admin/customers')
 
-    const data = await res.json()
     setCustomers(data)
   }
 

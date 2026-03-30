@@ -1,8 +1,8 @@
 'use client'
-
 import { useMemo, useState, useEffect, type CSSProperties, type ReactNode } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { adminApi } from '@/lib/api'
 
 type EmailTemplate = {
   templateId: string
@@ -65,14 +65,7 @@ export default function AdminEmailsPage() {
 
 const saveTemplate = async () => {
   try {
-    const res = await fetch(`http://localhost:5000/api/admin/emails/template/${selectedTemplate?.templateId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-      },
-      body: JSON.stringify(selectedTemplate)
-    })
+    const res = await adminApi.get(`/admin/emails/template/${selectedTemplate?.templateId}`)
 
     if (res.status === 401) {
       localStorage.removeItem('noxr_admin_token')
@@ -100,14 +93,7 @@ const saveTemplate = async () => {
   }
 
   const createCampaign = async () => {
-  const res = await fetch('http://localhost:5000/api/admin/emails/campaign', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-    },
-    body: JSON.stringify(campaignForm)
-  })
+  const res = await adminApi.post('/admin/emails/campaign')
 
   const data = await res.json()
   setCampaigns(prev => [data, ...prev])
@@ -115,15 +101,7 @@ const saveTemplate = async () => {
 
   const sendNow = async (campaignId: string) => {
   try {
-    const res = await fetch(
-      `http://localhost:5000/api/admin/emails/campaign/${campaignId}/send`,
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`,
-        },
-      }
-    )
+    const res = await adminApi.post(`/admin/emails/campaign/${campaignId}/send`)
 
     if (res.status === 401) {
       localStorage.removeItem('noxr_admin_token')
@@ -146,11 +124,7 @@ const saveTemplate = async () => {
   useEffect(() => {
   const fetchEmailData = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/emails', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('noxr_admin_token')}`
-        }
-      })
+      const res = await adminApi.get('/admin/emails')
 
       if (res.status === 401) {
         localStorage.removeItem('noxr_admin_token')

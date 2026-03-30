@@ -1,6 +1,6 @@
 'use client'
-
 import { useState, useEffect } from 'react'
+import { adminApi } from '@/lib/api'
 
 export default function AdminDiscountsPage() {
   const [discounts, setDiscounts] = useState<any[]>([])
@@ -14,8 +14,8 @@ export default function AdminDiscountsPage() {
 
   const fetchDiscounts = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/discounts/admin/all')
-      const data = await res.json()
+      const data = await adminApi.get('/discounts/admin/all')
+
       setDiscounts(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Fetch error:', error)
@@ -27,17 +27,13 @@ export default function AdminDiscountsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this discount code? This cannot be undone.')) return
 
-    await fetch(`http://localhost:5000/api/discounts/${id}`, {
-      method: 'DELETE',
-    })
+    await adminApi.delete(`/discounts/${id}`)
 
     fetchDiscounts()
   }
 
   const toggleActive = async (discount: any) => {
-    await fetch(`http://localhost:5000/api/discounts/${discount._id}/toggle`, {
-      method: 'PATCH',
-    })
+    await adminApi.put(`/discounts/${discount._id}/toggle`, {})
 
     fetchDiscounts()
   }

@@ -26,14 +26,8 @@ export default function CollectionDetailPage() {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetch(`/collections/${slug}`)
-      
-      if (!res.ok) {
-        setCollection(null)
-        return
-      }
-      
-      const data = await res.json()
+      const data = await api.get(`/collections/${slug}`)
+
       setCollection(data)
     } catch (error) {
       console.error('Failed to fetch collection:', error)
