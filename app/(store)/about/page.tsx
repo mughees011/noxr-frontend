@@ -51,7 +51,7 @@ export default function AboutPage() {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: "url('/about/hero.jpg')",
+            backgroundImage: "url('/products/mo2.webp')",
             backgroundSize: 'cover',
             backgroundPosition: 'center 20%',
             filter: 'brightness(0.45) saturate(0.7) contrast(1.05)',
@@ -80,7 +80,7 @@ export default function AboutPage() {
             className="font-body font-light mb-4"
             style={{ fontSize: '9px', letterSpacing: '0.45em', textTransform: 'uppercase', color: 'rgba(247,243,237,0.4)' }}
           >
-            Est. 2023 · Karachi
+            Est. 2026 · Karachi
           </p>
           <h1
             className="font-display font-light text-[#F7F3ED] mb-6"
@@ -195,9 +195,9 @@ function MissionSection() {
 function StatsStrip() {
   const { ref, inView } = useInView()
   const stats = [
-    { value: '2023', label: 'Founded' },
-    { value: '3', label: 'Collections' },
-    { value: '25+', label: 'Pieces designed' },
+    { value: '2026', label: 'Founded' },
+    { value: '2', label: 'Collections' },
+    { value: '5+', label: 'Pieces designed' },
     { value: '100%', label: 'Cotton quality' },
   ]
   return (

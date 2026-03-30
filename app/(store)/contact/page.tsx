@@ -26,9 +26,9 @@ const CONTACT_INFO = [
   },
   {
     title: 'Phone',
-    value: '+92 XXX XXXXXXX',
+    value: '+92 337 7033279',
     subtitle: 'Mon-Sat, 10AM-6PM PKT',
-    link: 'tel:+92XXXXXXXXX',
+    link: 'tel:+923377033279',
   },
   {
     title: 'Studio',
