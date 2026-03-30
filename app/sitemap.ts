@@ -1,40 +1,62 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://noxr.store' // change to your real domain
-
+  const baseUrl = 'https://noxr.vercel.app'
+  
   return [
     {
-      url: `${baseUrl}`,
+      url: baseUrl,
       lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
     },
     {
       url: `${baseUrl}/shop`,
       lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/collection`,
+      url: `${baseUrl}/collections`,
       lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/sustainability`,
-      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
     },
     {
-      url: `${baseUrl}/faq`,
+      url: `${baseUrl}/shipping`,
       lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
     {
-      url: `${baseUrl}/size-guide`,
+      url: `${baseUrl}/returns`,
       lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
   ]
 }
