@@ -43,7 +43,7 @@ export default function RegisterPage() {
   setFormState('loading')
   setErrorMsg('')
 
-  const data = await api.post('/auth/register', {
+  const data = await api.post('/api/auth/register', {
     name: `${form.firstName} ${form.lastName}`.trim(),
     email: form.email,
     password: form.password,

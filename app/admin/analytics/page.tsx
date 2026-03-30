@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const data = await adminApi.get(`/admin/analytics?range=${timeRange}`)
+        const data = await adminApi.get(`/api/admin/analytics?range=${timeRange}`)
 
         setAnalytics(data)
       } catch (error) {

@@ -18,7 +18,7 @@ export default function AdminOrderDetail() {
         return;
       }
 
-      const data = await adminApi.get(`/admin/orders/${id}`)
+      const data = await adminApi.get(`/api/admin/orders/${id}`)
 
       setOrder(data);
       setTracking(data.trackingNumber || "");
@@ -32,7 +32,7 @@ export default function AdminOrderDetail() {
   const updateStatus = async (status: string) => {
     const token = localStorage.getItem("noxr_admin_token");
 
-    await adminApi.put(`/admin/orders/${id}/status`, { status })
+    await adminApi.put(`/api/admin/orders/${id}/status`, { status })
 
 
     setOrder({ ...order, status });
@@ -41,7 +41,7 @@ export default function AdminOrderDetail() {
   const updateTracking = async () => {
     const token = localStorage.getItem("noxr_admin_token");
 
-    await adminApi.put(`/admin/orders/${id}/tracking`, { trackingNumber: tracking })
+    await adminApi.put(`/api/admin/orders/${id}/tracking`, { trackingNumber: tracking })
 
   };
 

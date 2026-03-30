@@ -25,7 +25,7 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     const fetchSettings = async () => {
-      const data = await adminApi.get('/admin/settings')
+      const data = await adminApi.get('/api/admin/settings')
 
       setCurrency(data.currency || 'PKR')
       setTaxRate(data.taxRate?.toString() || '0')
@@ -45,7 +45,7 @@ export default function AdminSettingsPage() {
   e.preventDefault()
 
   try {
-    await adminApi.put('/admin/settings', { currency, taxRate: Number(taxRate), freeShippingThreshold: Number(freeShippingThreshold), supportEmail, phone, warehouseAddress, socialLinks: { instagram, tiktok, twitter } })
+    await adminApi.put('/api/admin/settings', { currency, taxRate: Number(taxRate), freeShippingThreshold: Number(freeShippingThreshold), supportEmail, phone, warehouseAddress, socialLinks: { instagram, tiktok, twitter } })
 
     alert('Settings saved')
   } catch (error) {

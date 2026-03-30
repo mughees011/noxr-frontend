@@ -62,7 +62,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     ;(async () => {
       try {
-        const data = await adminApi.get('/products')
+        const data = await adminApi.get('/api/products')
         if (!Array.isArray(data)) return
         setProducts(data.map(normalizeProduct))
       } catch {

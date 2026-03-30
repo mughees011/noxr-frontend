@@ -14,7 +14,7 @@ export default function AdminDiscountsPage() {
 
   const fetchDiscounts = async () => {
     try {
-      const data = await adminApi.get('/discounts/admin/all')
+      const data = await adminApi.get('/api/discounts/admin/all')
 
       setDiscounts(Array.isArray(data) ? data : [])
     } catch (error) {
@@ -27,13 +27,13 @@ export default function AdminDiscountsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this discount code? This cannot be undone.')) return
 
-    await adminApi.delete(`/discounts/${id}`)
+    await adminApi.delete(`/api/discounts/${id}`)
 
     fetchDiscounts()
   }
 
   const toggleActive = async (discount: any) => {
-    await adminApi.put(`/discounts/${discount._id}/toggle`, {})
+    await adminApi.put(`/api/discounts/${discount._id}/toggle`, {})
 
     fetchDiscounts()
   }
@@ -168,8 +168,8 @@ export default function AdminDiscountsPage() {
           onClose={() => { setShowModal(false); setEditingDiscount(null) }}
           onSave={async (data: any) => {
             const url = editingDiscount 
-              ? `http://localhost:5000/api/discounts/${editingDiscount._id}`
-              : 'http://localhost:5000/api/discounts'
+              ? `/api/discounts/${editingDiscount._id}`
+              : `/api/discounts`
             
             const method = editingDiscount ? 'PUT' : 'POST'
 

@@ -65,7 +65,7 @@ export default function AdminEmailsPage() {
 
 const saveTemplate = async () => {
   try {
-    const res = await adminApi.get(`/admin/emails/template/${selectedTemplate?.templateId}`)
+    const res = await adminApi.get(`/api/admin/emails/template/${selectedTemplate?.templateId}`)
 
     if (res.status === 401) {
       localStorage.removeItem('noxr_admin_token')
@@ -93,7 +93,7 @@ const saveTemplate = async () => {
   }
 
   const createCampaign = async () => {
-  const res = await adminApi.post('/admin/emails/campaign')
+  const res = await adminApi.post('/api/admin/emails/campaign')
 
   const data = await res.json()
   setCampaigns(prev => [data, ...prev])
@@ -101,7 +101,7 @@ const saveTemplate = async () => {
 
   const sendNow = async (campaignId: string) => {
   try {
-    const res = await adminApi.post(`/admin/emails/campaign/${campaignId}/send`)
+    const res = await adminApi.post(`/api/admin/emails/campaign/${campaignId}/send`)
 
     if (res.status === 401) {
       localStorage.removeItem('noxr_admin_token')
@@ -124,7 +124,7 @@ const saveTemplate = async () => {
   useEffect(() => {
   const fetchEmailData = async () => {
     try {
-      const res = await adminApi.get('/admin/emails')
+      const res = await adminApi.get('/api/admin/emails')
 
       if (res.status === 401) {
         localStorage.removeItem('noxr_admin_token')

@@ -28,7 +28,7 @@ export default function AdminSupportPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('noxr_admin_token')
-    router.push('/admin/login')
+    router.push('/api/admin/login')
   }
 
   const handleReplySubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,7 +36,7 @@ export default function AdminSupportPage() {
 
   if (!selectedMessage || !replyText.trim()) return
 
-  await adminApi.post(`/admin/support/${selectedMessage.id}/reply`, {
+  await adminApi.post(`/api/admin/support/${selectedMessage.id}/reply`, {
   message: replyText
 })
 
@@ -55,8 +55,7 @@ export default function AdminSupportPage() {
 
   useEffect(() => {
   const fetchMessages = async () => {
-    const res = await adminApi.get('/admin/support')
-    const data = await res.json()
+    const data = await adminApi.get('/api/admin/support')
     setMessages(data)
   }
 

@@ -65,7 +65,7 @@ export default function AdminCustomersPage() {
 
   const handleLogout = () => {
     localStorage.removeItem('noxr_admin_token')
-    router.push('/admin/login')
+    router.push('/api/admin/login')
   }
 
   const markVip = () => {
@@ -87,7 +87,7 @@ export default function AdminCustomersPage() {
 
   useEffect(() => {
   const fetchCustomers = async () => {
-    const data = await adminApi.get('/admin/customers')
+    const data = await adminApi.get('/api/admin/customers')
 
     setCustomers(data)
   }

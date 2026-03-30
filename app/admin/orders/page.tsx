@@ -43,7 +43,7 @@ export default function AdminOrdersPage() {
         return
       }
 
-      const data = await adminApi.get('/admin/orders')
+      const data = await adminApi.get('/api/admin/orders')
 
       if (Array.isArray(data)) {
         setOrders(data)
@@ -61,7 +61,6 @@ export default function AdminOrdersPage() {
         o._id.toLowerCase().includes(search.toLowerCase()) ||
         (o.user?.name || '').toLowerCase().includes(search.toLowerCase())
     )
-
 
     const updateTracking = async (orderId: string, trackingNumber: string) => {
   if (!trackingNumber) return

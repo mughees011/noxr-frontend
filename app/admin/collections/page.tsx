@@ -15,15 +15,11 @@ export default function AdminCollectionsPage() {
 
   const fetchData = async () => {
     try {
-      // const [collectionsRes, productsRes] = await Promise.all([
-      //   fetch('http://localhost:5000/api/collections/admin/all'),
-      //   fetch('http://localhost:5000/api/products')
-      // ])
       
       const [collectionsData, productsData] = await Promise.all([
-  adminApi.get('/collections/admin/all'),
-  adminApi.get('/products')
-])
+        adminApi.get('/api/collections/admin/all'),
+        adminApi.get('/api/products')
+      ])
       
       setCollections(Array.isArray(collectionsData) ? collectionsData : [])
       setProducts(Array.isArray(productsData) ? productsData : [])
@@ -37,19 +33,19 @@ export default function AdminCollectionsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this collection? This cannot be undone.')) return
 
-    await adminApi.delete(`/collections/${id}`)
+    await adminApi.delete(`/api/collections/${id}`)
 
     fetchData()
   }
 
   const toggleLive = async (collection: any) => {
-    await adminApi.put(`/collections/${collection._id}`, { ...collection, isLive: !collection.isLive })
+    await adminApi.put(`/api/collections/${collection._id}`, { ...collection, isLive: !collection.isLive })
 
     fetchData()
   }
 
   const toggleFeatured = async (collection: any) => {
-    await adminApi.put(`/collections/${collection._id}`, { ...collection, isFeatured: !collection.isFeatured })
+    await adminApi.put(`/api/collections/${collection._id}`, { ...collection, isFeatured: !collection.isFeatured })
 
     fetchData()
   }
