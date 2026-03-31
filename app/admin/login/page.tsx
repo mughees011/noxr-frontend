@@ -21,26 +21,30 @@ export default function AdminLoginPage() {
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
-  
-  try {
-  setFormState('loading')
-  setErrorMsg('')
 
-    const data = await adminApi.post('/admin/login', {
-      email: form.email,
-      password: form.password
-    })
-    const token = data?.token || data?.accessToken
-    
-    // localStorage.setItem('noxr_admin_token', data.token)
+  try {
+    setFormState('loading')
+    setErrorMsg('')
+
+    const res = await adminApi.post('/admin/login', form)
+
+    console.log('LOGIN RESPONSE:', res)
+
+    const token = res.token || res.data?.token
+
+    if (!token) {
+      throw new Error('No token returned')
+    }
+
+    localStorage.setItem('noxr_admin_token', token)
 
     router.push('/admin/dashboard')
 
-  }   catch (error: any) {
-        setFormState('error')
-        setErrorMsg(error.message || 'Invalid credentials')
-      }
+  } catch (error: any) {
+    setFormState('error')
+    setErrorMsg(error.message || 'Invalid credentials')
   }
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F7F3ED' }}>
